@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser');
+var parseUrlEncoded = bodyParser.urlencoded({extended: false});
 
 var blocks = {
 	'Fixed':'Fastened securely in position',
@@ -23,25 +25,29 @@ app.param('name', function(request, response, next){
 });
 
 
-/*
+
 app.get('/', function(request, response) {
 	//1)response.send('Huilo woorld');
-	//5) response.sendFile(__dirname + '/public/index.html');
+	//5)
+	response.sendFile(__dirname + '/public/index2.html');
 });
-*/
+
 
 app.get('/blocks', function(request, response) {
-	var blocks = ['Fixed', 'Movable', 'Rotating'];
 	//2) response.send(blocks);
 	//3) response.json(blocks);
 	//4) response.redirect('/parts');
 	//7) response.redirect(301, '/parts');
-
+	
+	/*xxx
 	if(request.query.limit >= 0) {
 		response.json(blocks.slice(0, request.query.limit));
 	} else {
 		response.send(blocks);
 	}
+	*/
+
+	response.json(Object.keys(blocks));
 });
 
 app.get('/blocks/:name', function(request, response){
@@ -54,6 +60,20 @@ app.get('/blocks/:name', function(request, response){
 	} else {
 		response.json(description);
 	}
+});
+
+app.post('/blocks', parseUrlEncoded, function(request, response){
+	var newBlock = request.body;
+	blocks[newBlock.name] = newBlock.description;
+	console.log(blocks);
+	response.status(201).json(newBlock.name);
+});
+
+app.delete('/blocks/:name', function(request, response){
+	console.log(request.blockName);
+	delete blocks[request.blockName];
+	console.log(blocks);
+	response.sendStatus(200);
 });
 
 app.get('/locations/:name', function(request, response){
