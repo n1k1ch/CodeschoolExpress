@@ -56,16 +56,17 @@ app.route('/blocks/:name')
 		response.sendStatus(200);
 	});
 
-app.get('/locations/:name', function(request, response){
-	var location = locations[request.blockName];
+app.route('/locations/:name')
+	.get(function(request, response){
+		var location = locations[request.blockName];
 
-	if(!location) {
-		response.status(404)
-		.json('No location found for ' + request.params.name);
-	} else {
-		response.json(location);
-	}
-});
+		if(!location) {
+			response.status(404)
+			.json('No location found for ' + request.params.name);
+		} else {
+			response.json(location);
+		}
+	});
 
 
 app.use(express.static('public'));
